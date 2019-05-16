@@ -125,13 +125,11 @@ public class SellerDaoJDBC implements SellerDao {
 					+ "ON seller.DepartmentId = department.Id "
 					+ "WHERE seller.Id = ? ");
 			
-			st.setInt(1, id);             //    <- ID PASSADO NO METODO (Linha42)
+			st.setInt(1, id);             //    <- ID PASSADO NO METODO
 			rs = st.executeQuery();
 			
 			if (rs.next()) {
-				
 				Department dep = instanciateDepartment(rs);
-				
 				Seller obj = instanciateSeller(rs, dep);
 				return obj;
 			} 

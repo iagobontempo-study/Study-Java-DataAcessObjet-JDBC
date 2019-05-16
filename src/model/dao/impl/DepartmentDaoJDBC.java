@@ -14,7 +14,7 @@ import model.entities.Department;
 
 public class DepartmentDaoJDBC implements DepartmentDao{
 
-	private Connection conn;     // FOI CRIADO UMA DEPENDENCIA, estara disponivel em qualquer classe DepartmentDaoJDBC
+	private Connection conn;     // FOI CRIADO UMA DEPENDENCIA
 	
 	public DepartmentDaoJDBC(Connection conn) {
 		this.conn = conn;
@@ -54,7 +54,21 @@ public class DepartmentDaoJDBC implements DepartmentDao{
 
 	@Override
 	public void update(Department obj) {
-		// TODO Auto-generated method stub
+		PreparedStatement st = null;
+		try {
+			st = conn.prepareStatement(
+					"UPDATE department "
+					+ "SET Name = ?"
+					+ "WHERE Id = ?");
+			
+			st.setString(1, obj.getName());
+			st.setInt(2, obj.getId());
+			st.executeUpdate();			
+		} catch (SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(st);
+		}
 		
 	}
 
@@ -66,9 +80,39 @@ public class DepartmentDaoJDBC implements DepartmentDao{
 
 	@Override
 	public Department findById(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		
+		try {
+			st = conn.prepareStatement(
+					"SELECT department.*,department.Name "
+					+ "FROM department "
+					+ "WHERE department.Id = ?");
+			
+			st.setInt(1, id);             //    <- ID PASSADO NO METODO
+			rs = st.executeQuery();
+			
+			if (rs.next()) {
+				Department dep = instanciateDepartment(rs);
+				return dep;
+			} 
+			return null; 
+		} catch(SQLException e) {
+			throw new DbException(e.getMessage());
+		} finally {
+			DB.closeStatement(st);
+			DB.closeResultSet(rs);			
+		}
+	
 	}
+
+	private Department instanciateDepartment(ResultSet rs) throws SQLException {
+		Department dep = new Department();
+		dep.setId(rs.getInt("Id"));
+		dep.setName(rs.getString("Name"));
+		return dep;
+	}
+
 
 	@Override
 	public List<Department> findAll() {
