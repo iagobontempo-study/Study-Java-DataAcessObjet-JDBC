@@ -9,7 +9,7 @@ import model.dao.SellerDao;
 import model.entities.Department;
 import model.entities.Seller;
 
-public class Program {
+public class ProgramSeller {
 
 	public static void main(String[] args) {
 		
@@ -52,5 +52,6 @@ public class Program {
 		sellerDao.deleteById(id);
 		System.out.println("Deleted! ID = " + id);
 		
+		scanner.close();
 	}
 }
