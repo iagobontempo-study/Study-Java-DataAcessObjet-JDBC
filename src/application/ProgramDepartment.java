@@ -1,5 +1,8 @@
 package application;
 
+import java.util.List;
+import java.util.Scanner;
+
 import model.dao.DaoFactory;
 import model.dao.DepartmentDao;
 import model.entities.Department;
@@ -7,6 +10,8 @@ import model.entities.Department;
 public class ProgramDepartment {
 
 	public static void main(String[] args) {
+		
+		Scanner scanner = new Scanner(System.in);
 		
 		DepartmentDao departmentDao = DaoFactory.createDepartmentDao();
 		
@@ -25,8 +30,19 @@ public class ProgramDepartment {
 		departmentDao.update(department);
 		System.out.println("Updated! ID = " + department.getId());
 		
+		System.out.println("=== TEST3 === findAll");
+		List<Department> list = departmentDao.findAll();
+		for (Department obj : list) {
+			System.out.println(obj);
+		}
 		
+		System.out.println("=== TEST4 === delete Department");
+		System.out.println("ID to delete: ");
+		int id = scanner.nextInt();
+		departmentDao.deleteById(id);
+		System.out.println("Deleted! ID = " + id);
 		
+		scanner.close();
 
 	}
 
